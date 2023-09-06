@@ -7,11 +7,8 @@ def test_push():
     push = _jpush.create_push()
     # if you set the logging level to "DEBUG",it will show the debug logging.
     _jpush.set_logging("DEBUG")
-    # push.audience = jpush.all_
-    # push.audience = jpush.audience(
-    #     alias=['UserAlias1', 'UserAlias2']  # 指定要发送消息的别名列表
-    # )
-    push.audience = jpush.registration_id("18071adc0215d1d5979")
+    push.audience = jpush.alias("test_alias@veolia.com")
+    # push.audience = jpush.registration_id("18071adc0215d1d5979")
     alert = "Praxair (Shanghai ZJ) Semiconductor Gase_Online - Cooling Copper Corrosion rate数值高于InSight设置报警上限(HH)，现值0.21，前值0.168, 0.172, 0.167，请及时登录InSight查看详细数据情况 https://insight.watertechs.cn/"
     push.notification = jpush.notification(ios=jpush.ios(alert=alert),android=jpush.android(alert=alert,big_text=alert,title="水质报告报警",style=1))
     # push.message = jpush.message(msg_content=alert,title="水质报告报警",content_type="text",extras={"key": "value"})
@@ -30,5 +27,5 @@ def test_device():
     # logger.info(response)
 
 if __name__ == '__main__':
-    test_device()
-
+    # test_device()
+    test_push()
