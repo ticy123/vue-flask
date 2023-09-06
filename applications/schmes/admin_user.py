@@ -13,6 +13,7 @@ class UserOutSchema(ma.Schema):
 
 
 
+
 class UserOutSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User

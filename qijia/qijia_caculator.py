@@ -2,7 +2,7 @@ import pandas as pd
 import xlrd
 import xlwt as xlwt
 
-EXCEL_IN = 'C:\workspace\python\qijia\qijia\月报分站模板-腾讯改.xlsx'
+EXCEL_IN = r'C:\workspace\python\vue-flask\qijia\excel\月报分站模板-小红书.xlsx'
 EXCEL_OUT = EXCEL_IN.split('.')[0] + '111.xlsx'
 
 def open_excel(name=EXCEL_IN):

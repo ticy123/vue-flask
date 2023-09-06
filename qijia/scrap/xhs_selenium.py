@@ -1,4 +1,5 @@
 import csv
+import datetime
 import threading
 from time import sleep
 
@@ -41,7 +42,7 @@ chrome_options.page_load_strategy = 'normal'
 
 class Brower:
 
-    def __init__(self, file_name, start_date='2023-05-01', end_date='2023-05-24'):
+    def __init__(self, file_name, start_date='2023-05-01', end_date='2023-05-31'):
         self._download_path='C:\\Users\\Administrator\\Downloads'
         self._start_date = start_date
         self._end_date = end_date
@@ -117,8 +118,8 @@ class Brower:
                 self.driver.maximize_window()
                 self.driver.get("https://ad.xiaohongshu.com/aurora/home")
                 actions = webdriver.ActionChains(self.driver)
-                el = self.driver.find_elements(By.CLASS_NAME, "css-1r2f04i")[1]
-                actions.move_to_element(el).click().perform()
+                el = self.wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "css-1r2f04i")))
+                actions.move_to_element(el[1]).click().perform()
                 # print("点击登录按钮")
                 self.wait.until(EC.presence_of_element_located((By.XPATH, '//input[@placeholder="邮箱"]'))).send_keys(
                     "qitiantian@qeeka.com")
@@ -209,7 +210,8 @@ class Brower:
                     if res is not None:
                         break
                     if page < self.pages:
-                        next_page = self.wait.until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[2]/div[3]/div[2]/div[2]/div[3]/div[2]/div[1]/div[5]')))
+                        # next_page = self.wait.until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[1]/div/div[2]/div[3]/div[2]/div[2]/div[3]/div[2]/div[1]/div[5]')))
+                        next_page = self.wait.until(EC.presence_of_all_elements_located((By.XPATH, '//span[@class="d-icon --color-current --color-static --size-icon-default"]')))[-1]
                         print(f"第{page}页解析结束,进入下一页")
                         next_page.click()
                         sleep(5)
@@ -257,17 +259,24 @@ class Brower:
             try:
                 self.wait.until(EC.presence_of_element_located((By.XPATH, '//span[text()="财务"]'))).click()
                 sleep(2)
-                start_date = self.wait.until(EC.presence_of_all_elements_located((By.XPATH,"//input[@class='d-text']")))[0]
-                start_date.send_keys(Keys.CONTROL, 'a')
-                start_date.send_keys(self.start_date)
-                end_date = self.wait.until(EC.presence_of_all_elements_located((By.XPATH, "//input[@class='d-text']")))[1]
-                end_date.send_keys(Keys.CONTROL, 'a')
-                end_date.send_keys(self.end_date)
-                sleep(5)
+                # 将self.start_date 和 self.end_date加一天
+                start_date = (datetime.datetime.strptime(self.start_date, "%Y-%m-%d") + datetime.timedelta(
+                    days=1)).strftime("%Y-%m-%d")
+                end_date = (datetime.datetime.strptime(self.end_date, "%Y-%m-%d") + datetime.timedelta(
+                    days=1)).strftime("%Y-%m-%d")
+                start_date_input = self.wait.until(EC.presence_of_all_elements_located((By.XPATH,"//input[@class='d-text']")))[0]
+                start_date_input.send_keys(Keys.CONTROL, 'a')
+                start_date_input.send_keys(start_date)
+                sleep(2)
+                end_date_input = self.wait.until(EC.presence_of_all_elements_located((By.XPATH, "//input[@class='d-text']")))[1]
+                end_date_input.send_keys(Keys.CONTROL, 'a')
+                end_date_input.send_keys(end_date)
+                sleep(3)
+                #查找元素，其中style里面包含‘2/2/3/3’的元素
                 # 获取现金金额
-                total_account = self.wait.until(EC.presence_of_element_located((By.XPATH,'/html/body/div[1]/div/div[2]/div[3]/div[2]/div[2]/div[2]/div/div[2]/div[1]/div[12]/div/span'))).text
+                total_account = self.wait.until(EC.presence_of_element_located((By.XPATH, "//div[@class='d-grid-item d-td d-table-cell-border-bottom' and contains(@style,'2 / 3 / 3 / 4')]"))).text
                 # 获取返回金额
-                return_account = self.wait.until(EC.presence_of_element_located((By.XPATH,'/html/body/div[1]/div/div[2]/div[3]/div[2]/div[2]/div[2]/div/div[2]/div[1]/div[13]/div/span'))).text
+                return_account = self.wait.until(EC.presence_of_element_located((By.XPATH, "//div[@class='d-grid-item d-td d-table-cell-border-bottom' and contains(@style,'2 / 4 / 3 / 5')]"))).text
                 total_account = total_account if total_account != '-' else 0
                 return_account = return_account if return_account != '-' else 0
                 print(f"总金额:{total_account},返现金额:{return_account}")
@@ -386,12 +395,12 @@ class Brower:
                 report_el.click()
                 sleep(2)
                 #输入开始时间和结束时间
-                start_date = self.wait.until(EC.presence_of_element_located((By.XPATH, '//input[@placeholder="开始时间"]')))
-                start_date.send_keys(Keys.CONTROL, 'a')
-                start_date.send_keys(self.start_date)
-                end_date = self.wait.until(EC.presence_of_element_located((By.XPATH, '//input[@placeholder="截止时间"]')))
-                end_date.send_keys(Keys.CONTROL, 'a')
-                end_date.send_keys(self.end_date)
+                start_date_input = self.wait.until(EC.presence_of_element_located((By.XPATH, '//input[@placeholder="开始时间"]')))
+                start_date_input.send_keys(Keys.CONTROL, 'a')
+                start_date_input.send_keys(self.start_date)
+                end_date_input = self.wait.until(EC.presence_of_element_located((By.XPATH, '//input[@placeholder="截止时间"]')))
+                end_date_input.send_keys(Keys.CONTROL, 'a')
+                end_date_input.send_keys(self.end_date)
                 sleep(1)
                 #选取下拉框，下拉框文字为汇总
                 self.wait.until(EC.presence_of_all_elements_located((By.XPATH, '//div[@class="d-grid d-select-main d-select-main-indicator --color-text-title"]')))[1].click()
@@ -451,7 +460,7 @@ class Brower:
 
 
 def main():
-    brower = Brower("../helper/xhs_test.xlsx")
+    brower = Brower("../excel/xhs.xlsx")
     try:
         brower.handle_alert()
         brower.start()
@@ -464,4 +473,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 

@@ -4,7 +4,8 @@ from urllib.parse import quote_plus as urlquote
 
 
 class BaseConfig:
-
+    #服务器地址
+    SERVER_ADDRESS = '101.34.12.232'
     SYSTEM_NAME = os.getenv('SYSTEM_NAME', 'Pear Admin')
     # 主题面板的链接列表配置
     SYSTEM_PANEL_LINKS = [
@@ -71,12 +72,12 @@ class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_ECHO = False
 
 
+
 class ProductionConfig(BaseConfig):
     """生成环境配置"""
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_POOL_RECYCLE = 8
-
     LOG_LEVEL = logging.ERROR
 
 

@@ -1,6 +1,5 @@
 from flask_restful import Resource, reqparse
 
-
 users = [
     {
         "id": 1,
@@ -19,12 +18,14 @@ users = [
     }
 ]
 
+
 class User(Resource):
     def get(self, user_id):
-        for user in users:
-            if user["id"] == user_id:
-                return user, 200
-        return "User not found", 404
+        return {
+            "code": 20000,
+            "data": {'token': "1234567890",
+                     'roles': 'admin'}
+        }
 
     def put(self, user_id):
         parser = reqparse.RequestParser()
@@ -50,9 +51,13 @@ class User(Resource):
         users = [user for user in users if user["id"] != user_id]
         return "", 204
 
+
 class Users(Resource):
     def get(self):
-        return users, 200
+        return {
+                "code": 20000,
+                "data": {'token':"1234567890"}
+                }
 
     def post(self):
         parser = reqparse.RequestParser()
@@ -68,9 +73,3 @@ class Users(Resource):
         }
         users.append(user)
         return user, 201
-
-
-
-
-
-
